@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // User Profiles
+    match /users/{userId} {
+      // Anyone can create a profile (during signup)
+      // Users can read/write their own profile
+      allow create: if request.auth != null;
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Inventory (Hospital Stock)
+    match /inventory/{hospitalId} {
+      // Public Read: Donors/Seekers can see all inventory (for map & search)
+      allow read: if true;
+      
+      // Write: Only the specific hospital can update their own inventory
+      // We check if the user has the 'hospital' role in their user profile is a bit complex in rules without custom claims.
+      // Simpler approach: check if auth.uid matches the document ID (since doc ID IS the hospitalId)
+      allow write: if request.auth != null && request.auth.uid == hospitalId;
+    }
+
+    // Watchlists
+    match /watchlists/{watchlistId} {
+      // Users can only read/write their own watchlist items
+      allow create: if request.auth != null;
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+
+    // Donation Camps
+    match /donationCamps/{campId} {
+      // Public Read
+      allow read: if true;
+      
+      // Create: Only organizers (we can check if auth.uid exists, more strict role checks require custom claims or getting user doc)
+      // For MVP: Allow authenticated users to create if they claim to be organizers (handled in UI)
+      // Better: Check if resource.data.organizerId == request.auth.uid
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && resource.data.organizerId == request.auth.uid;
+    }
+  }
+}
