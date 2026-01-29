@@ -445,8 +445,7 @@ export const addDonationCamp = async (organizerId, campData) => {
 export const getDonationCamps = async () => {
   try {
     const q = query(
-      collection(db, 'donationCamps'),
-      where("status", "==", "upcoming")
+      collection(db, 'donationCamps')
     );
     const querySnapshot = await getDocs(q);
     let camps = [];
@@ -458,4 +457,30 @@ export const getDonationCamps = async () => {
     console.error("Error getting donation camps:", error);
     throw error;
   }
+};
+
+export const deleteOldCamps = async () => {
+    try {
+        const today = new Date();
+        const twoDaysAgo = new Date(today);
+        twoDaysAgo.setDate(today.getDate() - 2);
+        const dateString = twoDaysAgo.toISOString().split('T')[0];
+
+        // Query camps where date is older than 2 days
+        const q = query(
+            collection(db, 'donationCamps'),
+            where("date", "<", dateString)
+        );
+
+        const snapshot = await getDocs(q);
+        const batchPromises = snapshot.docs.map(doc => 
+            // In a real app we might archive instead of delete
+            // deleteDoc(doc.ref) 
+            updateDoc(doc.ref, { status: 'archived' }) // For safety, let's archive first
+        );
+        await Promise.all(batchPromises);
+    } catch (error) {
+        console.error("Error deleting old camps:", error);
+        // Don't throw here to avoid blocking UI rendering
+    }
 };
