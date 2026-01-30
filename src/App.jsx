@@ -12,7 +12,7 @@ import HospitalSignup from './pages/HospitalSignup';
 import HospitalDashboard from './pages/HospitalDashboard';
 import ProfileSettings from './pages/ProfileSettings';
 import { AuthProvider } from './context/AuthContext';
-import ChatBot from './components/ChatBot';
+import Chatbot from './components/Chatbot';
 
 function App() {
   return (
@@ -35,7 +35,7 @@ function App() {
               <Route path="/hospital-dashboard" element={<HospitalDashboard />} />
             </Routes>
           </main>
-          <ChatBot />
+          <Chatbot />
         </div>
       </Router>
     </AuthProvider>
