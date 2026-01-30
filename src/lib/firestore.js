@@ -171,6 +171,7 @@ export const createHospitalProfile = async (uid, hospitalData) => {
       email: hospitalData.email,
       role: 'hospital',
       hospitalName: hospitalData.hospitalName,
+      phoneNumber: hospitalData.phoneNumber, // Added phone number
       createdAt: new Date().toISOString()
     });
 
@@ -180,6 +181,7 @@ export const createHospitalProfile = async (uid, hospitalData) => {
       hospitalName: hospitalData.hospitalName,
       licenseId: hospitalData.licenseId,
       address: hospitalData.address,
+      phoneNumber: hospitalData.phoneNumber, // Added phone number to inventory as well for easy access
       location: hospitalData.location, // { lat: ..., lng: ... }
       bloodStock: {
         'A+': 0, 'A-': 0,

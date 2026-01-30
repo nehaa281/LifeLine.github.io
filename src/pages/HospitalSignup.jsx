@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createHospitalProfile } from '../lib/firestore';
-import { Building, MapPin, Mail, Lock, AlertCircle, Activity, Locate, Search } from 'lucide-react';
+import { Building, MapPin, Mail, Lock, AlertCircle, Activity, Locate, Search, Phone } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet/dist/leaflet.css';
@@ -89,6 +89,7 @@ export default function HospitalSignup() {
   const [hospitalName, setHospitalName] = useState('');
   const [licenseId, setLicenseId] = useState('');
   const [address, setAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [location, setLocation] = useState(null); // { lat, lng }
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -107,6 +108,11 @@ export default function HospitalSignup() {
       return setError('Please search or click on the map to set the hospital location.');
     }
 
+    // Validate Phone
+    if (!/^[0-9+]+$/.test(phoneNumber)) {
+      return setError('Phone number must contain only digits and optional + prefix');
+    }
+
     try {
       setError('');
       setLoading(true);
@@ -120,6 +126,7 @@ export default function HospitalSignup() {
         hospitalName,
         licenseId,
         address, // Address from form input (user can edit what was auto-filled)
+        phoneNumber,
         location: { lat: location.lat, lng: location.lng }
       });
 
@@ -187,6 +194,23 @@ export default function HospitalSignup() {
                   placeholder="License Number"
                   value={licenseId}
                   onChange={(e) => setLicenseId(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700">Phone Number</label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Phone className="h-5 w-5 text-slate-400" />
+                </div>
+                <input
+                  type="tel"
+                  required
+                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-slate-300 rounded-xl py-3"
+                  placeholder="+1 234 567 8900"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                 />
               </div>
             </div>

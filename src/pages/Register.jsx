@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Heart, Mail, Lock, AlertCircle, User, Building2, Building } from 'lucide-react';
+import { Heart, Mail, Lock, AlertCircle, User, Building2, Building, Phone } from 'lucide-react';
 import { createUserProfile } from '../lib/firestore';
 
 export default function Register() {

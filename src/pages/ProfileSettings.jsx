@@ -38,7 +38,10 @@ export default function ProfileSettings() {
                         setIsDonor(data.isDonor || false);
                         setUserRole(data.role || 'user');
 
-                        if (data.donorProfile) {
+                        // Initialize phone for hospital or user
+                        if (data.role === 'hospital') {
+                            setPhone(data.phoneNumber || '');
+                        } else if (data.donorProfile) {
                             setPhone(data.donorProfile.phone || '');
                             setCity(data.donorProfile.city || '');
                             setBloodType(data.donorProfile.bloodType || '');
@@ -89,6 +92,23 @@ export default function ProfileSettings() {
                     'donorProfile.city': city,
                     'donorProfile.bloodType': bloodType
                 });
+            } else if (userRole === 'hospital') {
+                // Update hospital profile including phone
+                await updateDoc(userRef, {
+                    name: name,
+                    phoneNumber: phone
+                });
+
+                // Also update the inventory document for public visibility
+                try {
+                    const inventoryRef = doc(db, 'inventory', currentUser.uid);
+                    await updateDoc(inventoryRef, {
+                        phoneNumber: phone
+                    });
+                } catch (invError) {
+                    console.error("Error updating inventory phone:", invError);
+                    // Continue even if inventory update fails (might not exist)
+                }
             } else {
                 await updateDoc(userRef, { name: name });
             }
@@ -165,6 +185,31 @@ export default function ProfileSettings() {
                                     <p className="mt-1 text-xs text-slate-400">Email cannot be changed.</p>
                                 </div>
                             </div>
+
+                            {/* Hospital Specific Fields */}
+                            {userRole === 'hospital' && (
+                                <div className="space-y-4 pt-4 border-t border-slate-100">
+                                    <h2 className="text-lg font-bold text-slate-900 pb-2 mb-4 flex items-center gap-2">
+                                        <Phone className="h-5 w-5 text-blue-500" />
+                                        Contact Information
+                                    </h2>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Hospital Phone Number</label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <Phone className="h-5 w-5 text-slate-400" />
+                                            </div>
+                                            <input
+                                                type="tel"
+                                                value={phone}
+                                                onChange={(e) => setPhone(e.target.value)}
+                                                className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-brand-500 focus:border-brand-500 outline-none"
+                                                placeholder="+1 234 567 8900"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Donor Info - Conditional */}
                             {isDonor ? (
