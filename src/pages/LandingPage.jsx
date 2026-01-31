@@ -1,8 +1,11 @@
 import React from 'react';
 import { ArrowRight, Activity, Users, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function LandingPage() {
+  const { userRole } = useAuth();
+
   return (
     <div className="flex flex-col min-h-[calc(100vh-64px)]">
       {/* Hero Section */}
@@ -20,9 +23,20 @@ export default function LandingPage() {
               <Link to="/search" className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold rounded-full text-white bg-brand-500 hover:bg-brand-600 shadow-lg hover:shadow-brand-300 transition-all transform hover:-translate-y-1">
                 Find Blood Now
               </Link>
-              <Link to="/dashboard" className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold rounded-full text-brand-600 bg-white border-2 border-brand-100 hover:border-brand-200 hover:bg-brand-50 shadow-sm transition-all">
-                Become a Donor
-              </Link>
+
+              {/* Conditional Button based on Role */}
+              {(userRole === 'hospital' || userRole === 'organizer') ? (
+                <Link
+                  to={userRole === 'hospital' ? "/hospital-dashboard" : "/organizer"}
+                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold rounded-full text-brand-600 bg-white border-2 border-brand-100 hover:border-brand-200 hover:bg-brand-50 shadow-sm transition-all"
+                >
+                  Go to Dashboard
+                </Link>
+              ) : (
+                <Link to="/dashboard" className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold rounded-full text-brand-600 bg-white border-2 border-brand-100 hover:border-brand-200 hover:bg-brand-50 shadow-sm transition-all">
+                  Become a Donor
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -37,17 +51,17 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-10">
-            <FeatureCard 
+            <FeatureCard
               icon={<Activity className="h-10 w-10 text-brand-500" />}
               title="Real-time Availability"
               description="Check blood availability in real-time from verified donors and blood banks near you."
             />
-            <FeatureCard 
+            <FeatureCard
               icon={<Users className="h-10 w-10 text-brand-500" />}
               title="Community Driven"
               description="Join a growing community of life-savers. Every donation makes a difference."
             />
-            <FeatureCard 
+            <FeatureCard
               icon={<ShieldCheck className="h-10 w-10 text-brand-500" />}
               title="Verified & Secure"
               description="All donors and requests are verified to ensure safety and trust in the platform."

@@ -25,7 +25,7 @@ const Chatbot = () => {
 
   const getBotResponse = (text) => {
     const lowerText = text.toLowerCase();
-    
+
     if (lowerText.includes('hello') || lowerText.includes('hi')) {
       return "Hello! I'm here to help you with blood donation queries. Ask me about eligibility, how to donate, or emergency requests.";
     } else if (lowerText.includes('eligible') || lowerText.includes('eligibility')) {
@@ -83,10 +83,10 @@ const Chatbot = () => {
         // Simple Title Case conversion for better matching (e.g. "delhi" -> "Delhi")
         const cityInput = userText.trim();
         const city = cityInput.charAt(0).toUpperCase() + cityInput.slice(1).toLowerCase();
-        
+
         newEmergencyData.city = city;
         setEmergencyData(prev => ({ ...prev, city: city }));
-        
+
         try {
           // Query Firestore for matching donors
           // Schema matches ProfileSettings.jsx: isDonor (bool), donorProfile.bloodType (string), donorProfile.city (string)
@@ -121,27 +121,27 @@ const Chatbot = () => {
         }
 
         // Reset to normal mode
-        setChatMode("normal"); 
+        setChatMode("normal");
         setEmergencyData({ bloodGroup: '', city: '' });
-        
+
         // Redirect to find blood page (map) with a delay to allow reading
         setTimeout(() => {
-            navigate('/search');
+          navigate('/search');
         }, 3000);
       }
       else {
         // Normal flow
         botResponseText = getBotResponse(userText);
-        
+
         // Navigation logic for normal flow with delay
         if (lowerText.includes('where') && lowerText.includes('donate')) {
-            setTimeout(() => {
-                navigate('/camps');
-            }, 3000);
+          setTimeout(() => {
+            navigate('/camps');
+          }, 3000);
         } else if (lowerText.includes('eligible') || lowerText.includes('eligibility') || lowerText.includes('donate') || lowerText.includes('donation')) {
-            setTimeout(() => {
-                navigate('/dashboard');
-            }, 3000);
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 3000);
         }
       }
 
@@ -171,7 +171,7 @@ const Chatbot = () => {
               <MessageCircle size={20} />
               Support Chat
             </h3>
-            <button 
+            <button
               onClick={() => setIsOpen(false)}
               className="hover:bg-red-700 p-1 rounded transition-colors"
             >
@@ -183,13 +183,12 @@ const Chatbot = () => {
           <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
             <div className="flex flex-col gap-3">
               {messages.map((msg) => (
-                <div 
-                  key={msg.id} 
-                  className={`max-w-[80%] p-3 rounded-lg text-sm whitespace-pre-wrap ${
-                    msg.sender === 'user' 
-                      ? 'bg-red-600 text-white self-end rounded-br-none' 
+                <div
+                  key={msg.id}
+                  className={`max-w-[80%] p-3 rounded-lg text-sm whitespace-pre-wrap ${msg.sender === 'user'
+                      ? 'bg-red-600 text-white self-end rounded-br-none'
                       : 'bg-white border border-gray-200 text-gray-800 self-start rounded-bl-none shadow-sm'
-                  }`}
+                    }`}
                 >
                   {msg.text}
                 </div>
