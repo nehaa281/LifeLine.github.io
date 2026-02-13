@@ -26,7 +26,7 @@ This project enhances healthcare accessibility by connecting hospitals, organiza
 ## Features
 
 🩸 **Blood Group Smart Search**
-- Search across registered donors and hospitals to instantly find required blood groups in one place.
+  - Search across registered donors and hospitals to instantly find required blood groups in one place.
 
 🗺️ **Map-Based Nearby Hospital Discovery**
 - OpenStreetMap integration to display nearby hospitals and blood banks with navigation support.
